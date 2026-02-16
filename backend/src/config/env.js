@@ -59,4 +59,48 @@ const config = {
   AUDIT_LOG_RETENTION_DAYS: 90,
 };
 
+// Environment validation
+const validateEnvironment = () => {
+  const requiredVars = [
+    'MONGODB_URI',
+    'JWT_SECRET',
+    'JWT_REFRESH_SECRET'
+  ];
+
+  const criticalVars = [
+    'SMTP_HOST',
+    'SMTP_USER', 
+    'SMTP_PASS'
+  ];
+
+  const missingRequired = requiredVars.filter(varName => !process.env[varName]);
+  const missingCritical = criticalVars.filter(varName => !process.env[varName]);
+
+  if (missingRequired.length > 0) {
+    console.error('❌ Missing required environment variables:', missingRequired);
+    process.exit(1);
+  }
+
+  if (missingCritical.length > 0) {
+    console.warn('⚠️  Missing critical environment variables (some features may not work):', missingCritical);
+  }
+
+  if (config.NODE_ENV === 'production') {
+    const prodRequired = ['CLOUDINARY_CLOUD_NAME', 'CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET'];
+    const missingProd = prodRequired.filter(varName => !process.env[varName]);
+    
+    if (missingProd.length > 0) {
+      console.error('❌ Missing production environment variables:', missingProd);
+      process.exit(1);
+    }
+  }
+
+  console.log('✅ Environment validation passed');
+};
+
+// Validate environment on module load
+if (process.env.NODE_ENV !== 'test') {
+  validateEnvironment();
+}
+
 module.exports = config;
