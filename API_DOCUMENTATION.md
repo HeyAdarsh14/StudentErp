@@ -5,13 +5,28 @@
 http://localhost:5000/api
 ```
 
+## API Version
+**Current Version:** v1.2.0  
+**Last Updated:** February 18, 2026
+
+## Rate Limiting
+- **Standard Users:** 100 requests per hour
+- **Premium Users:** 500 requests per hour
+- **Admin Users:** No limit
+
 ## Authentication
 
-Most API endpoints require authentication using JWT tokens. Include the token in the Authorization header:
+All API endpoints require authentication using JWT tokens. Include the token in the Authorization header:
 
 ```
 Authorization: Bearer <your_jwt_token>
 ```
+
+### Security Features
+- JWT token expiration: 24 hours
+- Refresh token expiration: 7 days
+- Password encryption: bcrypt with 12 rounds
+- Role-based access control (RBAC)
 
 ### Authentication Endpoints
 
@@ -435,3 +450,63 @@ Most list endpoints support pagination:
   }
 }
 ```
+
+## Error Codes
+
+| Status Code | Description | Example Response |
+|-------------|-------------|------------------|
+| 400 | Bad Request | Invalid input parameters |
+| 401 | Unauthorized | Missing or invalid JWT token |
+| 403 | Forbidden | Insufficient permissions |
+| 404 | Not Found | Resource not found |
+| 409 | Conflict | Resource already exists |
+| 422 | Validation Error | Input validation failed |
+| 429 | Too Many Requests | Rate limit exceeded |
+| 500 | Internal Server Error | Server error occurred |
+
+## Webhooks
+
+The system supports webhooks for real-time notifications:
+
+### Available Events
+- `user.created` - New user registration
+- `assignment.submitted` - Assignment submission
+- `grade.updated` - Grade modification
+- `attendance.marked` - Attendance update
+- `fee.payment.completed` - Fee payment processed
+
+### Webhook Configuration
+Configure webhooks in the admin panel or via API:
+
+```http
+POST /admin/webhooks
+{
+  "url": "https://your-app.com/webhooks",
+  "events": ["user.created", "fee.payment.completed"],
+  "secret": "your_webhook_secret"
+}
+```
+
+## SDKs and Libraries
+
+### JavaScript/Node.js
+```bash
+npm install college-erp-sdk
+```
+
+### Python
+```bash
+pip install college-erp-python
+```
+
+### PHP
+```bash
+composer require college-erp/php-sdk
+```
+
+## Contact Support
+
+For API support and questions:
+- Email: api-support@college-erp.com
+- Documentation: https://docs.college-erp.com
+- GitHub Issues: https://github.com/college-erp/api/issues
