@@ -143,6 +143,19 @@ const getCurrentSemester = () => {
   return currentMonth >= 6 ? 'ODD' : 'EVEN';
 };
 
+/**
+ * Format response time for monitoring
+ */
+const formatResponseTime = (startTime) => {
+  const duration = Date.now() - startTime;
+  if (duration < 1000) {
+    return `${duration}ms`;
+  } else if (duration < 60000) {
+    return `${(duration / 1000).toFixed(2)}s`;
+  }
+  return `${(duration / 60000).toFixed(2)}m`;
+};
+
 module.exports = {
   hashPassword,
   comparePassword,
@@ -159,4 +172,5 @@ module.exports = {
   sanitizeUser,
   isDateInRange,
   getCurrentSemester,
+  formatResponseTime,
 };
