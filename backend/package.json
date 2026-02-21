@@ -14,7 +14,8 @@
     "health:check": "curl -f http://localhost:5000/health || exit 1",
     "metrics:view": "curl -s http://localhost:5000/metrics | json",
     "env:validate": "node -e \"require('./src/config/env')\"",
-    "setup:verify": "node setup-verify.js"
+    "setup:verify": "node setup-verify.js",
+    "prod:check": "npm run lint && npm run env:validate && npm run test"
   },
   "keywords": [
     "erp",
