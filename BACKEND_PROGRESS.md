@@ -445,8 +445,6 @@ Following **MVC + Services** pattern:
 - **Routes** - API endpoints
 - **Utils** - Helper functions
 
----
-
 ## 📝 Notes
 
 1. All password fields use bcrypt hashing
