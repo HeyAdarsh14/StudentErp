@@ -3,6 +3,16 @@
 ## 📋 Overview
 A modern, full-stack College ERP system built with MERN stack, featuring AI-powered intelligence, real-time updates, and a stunning dark-neon UI.
 
+## 🚀 Quick Start
+```bash
+# Clone the repository
+git clone https://github.com/your-username/College-Erp-main.git
+cd College-Erp-main
+
+# Quick setup with Docker
+docker-compose up -d
+```
+
 ## ✨ Key Features
 
 ### 🔐 Authentication & Authorization
