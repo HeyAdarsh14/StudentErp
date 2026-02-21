@@ -87,6 +87,7 @@ const login = async (req, res, next) => {
     const user = await User.findOne({ email, isActive: true }).select('+password');
 
     if (!user) {
+      logger.warn(`Failed login attempt - user not found: ${email} from IP: ${req.ip}`);
       return res.status(401).json({
         success: false,
         message: MESSAGES.INVALID_CREDENTIALS,
@@ -97,6 +98,7 @@ const login = async (req, res, next) => {
     const isPasswordValid = await comparePassword(password, user.password);
 
     if (!isPasswordValid) {
+      logger.warn(`Failed login attempt - invalid password: ${email} from IP: ${req.ip}`);
       return res.status(401).json({
         success: false,
         message: MESSAGES.INVALID_CREDENTIALS,
