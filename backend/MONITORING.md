@@ -148,6 +148,7 @@ npm run metrics:view
 ### ELK Stack (Elasticsearch, Logstash, Kibana)
 ```yaml
 # docker-compose.monitoring.yml
+# For complete monitoring stack setup, see: https://github.com/HeyAdarsh14/StudentErp/docker
 version: '3.8'
 services:
   elasticsearch:
