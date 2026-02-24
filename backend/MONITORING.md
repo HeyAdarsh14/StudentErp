@@ -123,6 +123,8 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 
 ## Development Usage
 
+> **🔧 Setup Instructions**: See [Development Setup Guide](https://github.com/HeyAdarsh14/StudentErp#development-setup) for complete installation steps
+
 ```bash
 # Check environment setup
 npm run env:validate
