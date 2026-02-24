@@ -1,5 +1,7 @@
 # Monitoring and Performance Configuration
 
+> **📋 Project Repository**: [Student ERP System](https://github.com/HeyAdarsh14/StudentErp) - Complete documentation and source code
+
 ## Environment Variables for Monitoring
 
 ```bash
