@@ -261,6 +261,8 @@ const SLOs = {
 
 ## Troubleshooting Common Issues
 
+> **🐛 Report Issues**: Found a bug or need help? [Create an issue](https://github.com/HeyAdarsh14/StudentErp/issues) on our GitHub repository
+
 ### High Memory Usage
 ```bash
 # Check memory-intensive queries
