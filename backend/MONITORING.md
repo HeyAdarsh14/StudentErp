@@ -259,6 +259,8 @@ const SLOs = {
 - [ ] Capacity planning metrics tracked
 - [ ] Incident response procedures documented
 
+> **📖 Additional Documentation**: Check out our [Wiki](https://github.com/HeyAdarsh14/StudentErp/wiki) for detailed deployment and configuration guides
+
 ## Troubleshooting Common Issues
 
 > **🐛 Report Issues**: Found a bug or need help? [Create an issue](https://github.com/HeyAdarsh14/StudentErp/issues) on our GitHub repository
