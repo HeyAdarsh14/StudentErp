@@ -1,8 +1,16 @@
 {
   "name": "college-erp-backend",
   "version": "3.0.0",
-  "description": "Modern College ERP System - Backend API",
+  "description": "Next-generation College ERP System Backend API with AI intelligence, real-time features, and modern architecture",
   "main": "src/server.js",
+  "homepage": "https://github.com/HeyAdarsh14/StudentErp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HeyAdarsh14/StudentErp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/HeyAdarsh14/StudentErp/issues"
+  },
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
@@ -21,9 +29,27 @@
     "erp",
     "college-management",
     "mern",
-    "education"
+    "education",
+    "nodejs",
+    "express",
+    "mongodb",
+    "jwt-auth",
+    "socket-io",
+    "ai-powered",
+    "student-management",
+    "academic-system",
+    "lms",
+    "placement-management",
+    "fee-management"
   ],
-  "author": "Your Name",
+  "author": {
+    "name": "Adarsh",
+    "email": "contact@studenterp.dev",
+    "url": "https://github.com/HeyAdarsh14"
+  },
+  "contributors": [
+    "Development Team <dev@studenterp.dev>"
+  ],
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.1.1",
