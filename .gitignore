@@ -47,6 +47,7 @@ coverage/
 
 # Docker
 docker-compose.override.yml
+*.dockerignore
 
 # Misc
 *.pem
@@ -54,3 +55,37 @@ docker-compose.override.yml
 *.cert
 Thumbs.db
 .cache
+
+# Runtime and temporary files
+*.tmp
+*.temp
+*.pid
+*.seed
+*.lock
+
+# Package manager files
+package-lock.json.bak
+yarn.lock.bak
+.pnpm-debug.log*
+
+# Editor specific
+*.sublime-project
+*.sublime-workspace
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+
+# OS generated files
+.DS_Store?
+ehthumbs.db
+Icon?
+
+# Security and configuration
+*.private
+*.secret
+config.local.js
+
+# AI and ML temporary files
+*.model
+*.weights
+.ai_cache/
