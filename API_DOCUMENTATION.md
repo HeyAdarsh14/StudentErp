@@ -2,12 +2,29 @@
 
 ## Base URL
 ```
-http://localhost:5000/api
+Development: http://localhost:5000/api
+Production:  https://api.studenterp.dev/api
 ```
 
 ## API Version
-**Current Version:** v1.2.0  
-**Last Updated:** February 18, 2026
+**Current Version:** v1.3.0  
+**Last Updated:** February 27, 2026  
+**Backwards Compatibility:** v1.2.0+  
+**Deprecation Policy:** 6 months notice for breaking changes
+
+## 🚀 Quick Start Guide
+```bash
+# Test API connectivity
+curl -I http://localhost:5000/api/health
+
+# Get API version info
+curl http://localhost:5000/api/version
+
+# Test authentication
+curl -X POST http://localhost:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"demo@college.edu","password":"demo123"}'
+```
 
 ## Rate Limiting
 - **Standard Users:** 100 requests per hour
@@ -64,6 +81,54 @@ Logout user
 
 #### POST `/auth/forgot-password`
 Request password reset
+
+---
+
+## 🔄 Real-time Features (NEW v1.3.0)
+
+### WebSocket Connection
+```javascript
+// Connect to real-time updates
+const socket = io('http://localhost:5000', {
+  auth: { token: 'your_jwt_token' }
+});
+
+// Listen for real-time notifications
+socket.on('notification', (data) => {
+  console.log('New notification:', data);
+});
+
+// Listen for assignment updates
+socket.on('assignment:updated', (assignment) => {
+  console.log('Assignment updated:', assignment.title);
+});
+```
+
+### Server-Sent Events (SSE)
+```bash
+# Subscribe to live updates
+curl -N -H "Authorization: Bearer <token>" \
+  http://localhost:5000/api/stream/notifications
+```
+
+### Batch Operations
+```bash
+# Bulk student enrollment
+POST /api/bulk/students
+Content-Type: application/json
+
+{
+  "operation": "create",
+  "data": [
+    {...student1},
+    {...student2}
+  ],
+  "options": {
+    "validateOnly": false,
+    "sendWelcomeEmails": true
+  }
+}
+```
 
 ---
 
