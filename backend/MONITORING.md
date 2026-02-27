@@ -1,6 +1,23 @@
 # Monitoring and Performance Configuration
 
-> **📋 Project Repository**: [Student ERP System](https://github.com/HeyAdarsh14/StudentErp) - Complete documentation and source code
+> **📋 Project Repository**: [Student ERP System](https://github.com/HeyAdarsh14/StudentErp) - Complete documentation and source code  
+> **📅 Last Updated**: February 27, 2026  
+> **🔄 Version**: 3.0.0  
+> **👥 Maintainer**: Development Team
+
+---
+
+## 📊 Overview
+
+This document provides comprehensive monitoring and performance configuration guidelines for the College ERP system. It includes real-time metrics, alerting strategies, and observability best practices for maintaining optimal system performance.
+
+### 🎯 Quick Start
+```bash
+# Verify monitoring setup
+npm run setup:verify
+npm run health:check
+npm run metrics:view
+```
 
 ## Environment Variables for Monitoring
 
@@ -265,6 +282,17 @@ const SLOs = {
 ## Troubleshooting Common Issues
 
 > **🐛 Report Issues**: Found a bug or need help? [Create an issue](https://github.com/HeyAdarsh14/StudentErp/issues) on our GitHub repository
+
+### Real-time Debugging Commands
+```bash
+# Monitor live system performance  
+curl -s "http://localhost:5000/metrics" | jq '.performance'
+curl -s "http://localhost:5000/health/detailed" | jq '.'
+
+# Check active connections and sessions
+curl -s "http://localhost:5000/admin/active-sessions" | jq '.count'
+curl -s "http://localhost:5000/metrics/websocket-connections" | jq '.'
+```
 
 ### High Memory Usage
 ```bash
