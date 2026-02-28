@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discord Community Support
+    url: https://discord.gg/studenterp
+    about: Join our Discord server for real-time help and community discussions
+  - name: 📚 Documentation & Wiki
+    url: https://github.com/HeyAdarsh14/StudentErp/wiki
+    about: Check our comprehensive documentation and wiki for guides and tutorials
+  - name: 🔒 Security Vulnerabilities
+    url: mailto:security@studenterp.dev
+    about: Please email security issues directly to our security team
+  - name: 📧 General Support
+    url: mailto:support@studenterp.dev
+    about: For general questions and support requests not suitable for GitHub issues
+  - name: 🐦 Follow us on Twitter
+    url: https://twitter.com/studenterp
+    about: Stay updated with the latest news and announcements

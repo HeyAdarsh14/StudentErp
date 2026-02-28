@@ -1,0 +1,149 @@
+---
+name: "📚 Documentation Improvement"
+about: Suggest improvements to documentation, guides, or help content
+title: "[DOCS] "
+labels: ["documentation", "improvement"]
+assignees: []
+---
+
+## 📚 Documentation Issue Summary
+A clear and concise description of the documentation improvement needed.
+
+## 📍 Location & Scope
+**Affected Documentation:**
+- [ ] README.md
+- [ ] API_DOCUMENTATION.md
+- [ ] CONTRIBUTING.md
+- [ ] DEPLOYMENT_GUIDE.md
+- [ ] SECURITY.md
+- [ ] Installation guides
+- [ ] User manual
+- [ ] Developer guides
+- [ ] Code comments
+- [ ] Other: ___________
+
+**Specific Files/Sections:**
+- File: `path/to/file.md`
+- Section: "Section name"
+- Lines: 123-456 (if applicable)
+
+## 🎯 Issue Type
+**What kind of documentation improvement is needed?**
+- [ ] 🐛 Error/Incorrect information
+- [ ] ❓ Missing information
+- [ ] 🔄 Outdated content
+- [ ] 📝 Unclear/confusing explanation
+- [ ] 🎨 Formatting/structure improvement
+- [ ] 🌍 Translation needed
+- [ ] 📖 New documentation needed
+- [ ] 🔗 Broken links
+- [ ] 📋 Missing examples
+- [ ] 🏷️ Better organization needed
+
+## 📋 Current State
+**What's wrong/missing currently?**
+Describe the current state of the documentation and what issues you've encountered.
+
+**Impact on Users:**
+- [ ] Blocks new user onboarding
+- [ ] Prevents feature usage
+- [ ] Causes confusion
+- [ ] Wastes developer time
+- [ ] Creates security risks
+- [ ] Other: ___________
+
+## ✨ Proposed Improvement
+**What changes do you suggest?**
+Provide specific suggestions for improvement.
+
+**Content to Add/Change:**
+```
+Provide the proposed documentation content here, or describe the changes needed.
+```
+
+**Better Organization:**
+If suggesting structural changes, describe the improved organization.
+
+## 👥 Target Audience
+**Who would benefit from this improvement?**
+- [ ] New developers
+- [ ] Experienced developers
+- [ ] System administrators
+- [ ] End users (students/faculty)
+- [ ] Security auditors
+- [ ] Contributors
+- [ ] DevOps engineers
+
+**User Skill Level:**
+- [ ] Beginner
+- [ ] Intermediate
+- [ ] Advanced
+- [ ] All levels
+
+## 🌟 Success Criteria
+**How will we know this improvement is successful?**
+- [ ] Users can complete tasks without asking for help
+- [ ] Reduced support questions about this topic
+- [ ] Improved developer onboarding time
+- [ ] Better feature adoption
+- [ ] Clearer understanding of concepts
+- [ ] Other: ___________
+
+## 📖 Additional Context
+**Examples from other projects:**
+Share any examples of good documentation from other projects.
+
+**User Feedback:**
+Include any feedback from users who struggled with the current documentation.
+
+**Related Issues:**
+Link any related GitHub issues or discussions.
+
+## 🎨 Format Preferences
+**Preferred documentation style:**
+- [ ] Step-by-step tutorial
+- [ ] Reference documentation
+- [ ] FAQ format
+- [ ] Video guide
+- [ ] Interactive examples
+- [ ] Code samples with explanations
+- [ ] Diagrams/flowcharts
+- [ ] Screenshots/GIFs
+
+## 🤝 Contribution Offer
+**Can you help implement this improvement?**
+- [ ] Yes, I can write the content
+- [ ] Yes, I can review/edit content
+- [ ] Yes, I can create examples
+- [ ] Yes, I can provide feedback on drafts
+- [ ] No, but I'm available for consultation
+- [ ] I can help with translation
+
+**Your background:**
+What's your experience level with this topic?
+
+## 📅 Priority & Timeline
+**Priority Level:**
+- [ ] 🔴 Critical - Blocking users
+- [ ] 🟠 High - Significantly impacts users
+- [ ] 🟡 Medium - Moderate improvement
+- [ ] 🟢 Low - Nice to have
+
+**Urgency:**
+- [ ] Immediate (blocks current work)
+- [ ] Next release cycle
+- [ ] When convenient
+- [ ] No specific timeline
+
+## 📋 Checklist
+- [ ] I have searched for similar documentation issues
+- [ ] I have checked if this might already be documented elsewhere
+- [ ] I have provided specific suggestions for improvement
+- [ ] I have identified the target audience
+- [ ] I understand this is maintained by volunteers
+
+## 🔗 References
+- Link to current documentation
+- Examples of good documentation
+- User feedback or questions
+- Related GitHub issues
