@@ -130,6 +130,107 @@ const getPerformanceMetrics = (req) => {
 };
 
 /**
+ * Get user-friendly error message with recovery suggestions
+ */
+const getErrorMessage = (err, errorDetails) => {
+  const errorMessages = {
+    VALIDATION_ERROR: {
+      message: "The provided data is invalid. Please check your inputs and try again.",
+      recovery: "Verify all required fields are filled and in the correct format."
+    },
+    DUPLICATE_ERROR: {
+      message: "This record already exists in the system.",
+      recovery: "Try using a different value for unique fields like email or ID."
+    },
+    AUTH_ERROR: {
+      message: "Authentication failed. Please log in again.",
+      recovery: "Refresh your login or contact support if the issue persists."
+    },
+    UPLOAD_ERROR: {
+      message: "File upload failed. Please check file size and type.",
+      recovery: "Ensure your file is under 10MB and is a supported format (PDF, DOC, images)."
+    },
+    RATE_LIMIT_ERROR: {
+      message: "Too many requests. Please slow down and try again later.",
+      recovery: "Wait a few minutes before making another request."
+    },
+    CAST_ERROR: {
+      message: "Invalid data format provided.",
+      recovery: "Check that IDs are valid and dates are in correct format."
+    },
+    UNKNOWN_ERROR: {
+      message: "An unexpected error occurred. Please try again later.",
+      recovery: "If the problem persists, please contact support with the correlation ID."
+    }
+  };
+
+  return errorMessages[errorDetails.type] || errorMessages.UNKNOWN_ERROR;
+};
+
+/**
+ * Enhanced database error handler
+ */
+const handleDatabaseError = (err) => {
+  const details = {
+    type: 'DATABASE_ERROR',
+    severity: 'ERROR',
+    category: 'DATABASE',
+    isRetryable: false,
+    httpStatus: 500
+  };
+
+  // MongoDB specific errors
+  if (err.name === 'MongoNetworkError') {
+    return { ...details, type: 'DB_CONNECTION_ERROR', severity: 'CRITICAL', isRetryable: true };
+  }
+
+  if (err.name === 'MongoTimeoutError') {
+    return { ...details, type: 'DB_TIMEOUT_ERROR', severity: 'WARNING', isRetryable: true };
+  }
+
+  if (err.code === 11000) {
+    // Extract field name from duplicate key error
+    const field = Object.keys(err.keyPattern || {})[0] || 'unknown';
+    return { 
+      ...details, 
+      type: 'DUPLICATE_ERROR', 
+      severity: 'INFO', 
+      httpStatus: 409,
+      field,
+      message: `Duplicate value for field: ${field}`
+    };
+  }
+
+  return details;
+};
+
+/**
+ * Error metrics collection
+ */
+const collectErrorMetrics = (errorDetails, req) => {
+  const metrics = {
+    errorType: errorDetails.type,
+    severity: errorDetails.severity,
+    category: errorDetails.category,
+    httpStatus: errorDetails.httpStatus,
+    endpoint: req.path,
+    method: req.method,
+    userId: req.user?.id,
+    userRole: req.user?.role,
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV
+  };
+
+  // In production, this could send to monitoring service
+  if (process.env.NODE_ENV === 'production') {
+    // Example: send to metrics aggregator
+    console.log('[METRICS]', JSON.stringify(metrics));
+  }
+
+  return metrics;
+};
+
+/**
  * Enhanced error handling middleware with comprehensive logging
  */
 const errorHandler = (err, req, res, next) => {
@@ -137,6 +238,17 @@ const errorHandler = (err, req, res, next) => {
   const errorDetails = getErrorDetails(err);
   const securityContext = getSecurityContext(req);
   const performanceMetrics = getPerformanceMetrics(req);
+  
+  // Handle database errors specifically
+  if (err.name && err.name.includes('Mongo')) {
+    Object.assign(errorDetails, handleDatabaseError(err));
+  }
+
+  // Collect error metrics for monitoring
+  const metrics = collectErrorMetrics(errorDetails, req);
+  
+  // Get user-friendly error message
+  const userMessage = getErrorMessage(err, errorDetails);
   
   // Comprehensive error logging with structured data
   const errorLog = {
@@ -147,7 +259,7 @@ const errorHandler = (err, req, res, next) => {
       type: errorDetails.type,
       severity: errorDetails.severity,
       category: errorDetails.category,
-      stack: err.stack,
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
       code: err.code,
       name: err.name
     },
@@ -161,6 +273,7 @@ const errorHandler = (err, req, res, next) => {
     },
     security: securityContext,
     performance: performanceMetrics,
+    metrics,
     environment: {
       nodeEnv: process.env.NODE_ENV,
       nodeVersion: process.version,
@@ -307,19 +420,40 @@ const errorHandler = (err, req, res, next) => {
   }
 
   // Default error with enhanced details
-  const statusCode = err.statusCode || 500;
-  const message = err.message || MESSAGES.SERVER_ERROR;
+  const statusCode = errorDetails.httpStatus || 500;
   const errorCode = err.code || (statusCode >= 500 ? 'INTERNAL_SERVER_ERROR' : 'CLIENT_ERROR');
 
-  res.status(statusCode).json({
+  // Enhanced response with user-friendly messages and recovery suggestions
+  const responseData = {
     ...baseResponse,
-    message,
+    message: userMessage.message,
     errorCode,
+    help: {
+      recovery: userMessage.recovery,
+      documentation: `${process.env.API_BASE_URL || 'https://docs.studenterp.dev'}/api/errors/${errorDetails.type.toLowerCase()}`,
+      support: process.env.SUPPORT_EMAIL || 'support@studenterp.dev'
+    },
+    ...(errorDetails.field && { field: errorDetails.field }),
     ...(process.env.NODE_ENV === 'development' && { 
-      stack: err.stack,
-      details: err.details 
+      debug: {
+        stack: err.stack,
+        details: err.details,
+        performance: performanceMetrics
+      }
     })
-  });
+  };
+
+  // Add retry information for retryable errors
+  if (errorDetails.isRetryable) {
+    responseData.retry = {
+      retryable: true,
+      retryAfter: err.retryAfter || 60,
+      maxRetries: 3,
+      backoffStrategy: 'exponential'
+    };
+  }
+
+  res.status(statusCode).json(responseData);
 };
 
 /**
