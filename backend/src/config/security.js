@@ -1,6 +1,9 @@
 /**
  * Security Configuration
  * Comprehensive security settings for the College ERP system
+ * @version 3.0.1
+ * @author College ERP Security Team
+ * @description Enhanced security middleware with CSRF protection and session management
  */
 
 const helmet = require('helmet');
@@ -10,6 +13,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cors = require('cors');
+const crypto = require('crypto');
 
 // Security Headers Configuration
 const helmetConfig = {
@@ -268,6 +272,67 @@ const requestSizeLimit = {
   raw: { limit: '10mb' },
 };
 
+// CSRF Protection for state-changing operations
+const csrfProtection = (req, res, next) => {
+  const method = req.method.toUpperCase();
+  
+  // Skip CSRF for GET, HEAD, OPTIONS
+  if (['GET', 'HEAD', 'OPTIONS'].includes(method)) {
+    return next();
+  }
+  
+  const token = req.header('x-csrf-token') || req.body._csrfToken;
+  const sessionToken = req.session?.csrfToken;
+  
+  if (!token || !sessionToken || token !== sessionToken) {
+    return res.status(403).json({
+      success: false,
+      message: 'Invalid CSRF token',
+      code: 'CSRF_INVALID'
+    });
+  }
+  
+  next();
+};
+
+// Generate CSRF token for new sessions
+const generateCSRFToken = () => {
+  return crypto.randomBytes(32).toString('hex');
+};
+
+// Session Security Configuration
+const sessionSecurity = {
+  name: 'college-erp-session',
+  secret: process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex'),
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+    httpOnly: true, // Prevent XSS
+    maxAge: 30 * 60 * 1000, // 30 minutes
+    sameSite: 'strict' // CSRF protection
+  },
+  rolling: true // Reset expiry on activity
+};
+
+// Security audit logging
+const securityLogger = (event, details, req) => {
+  const logEntry = {
+    timestamp: new Date().toISOString(),
+    event,
+    details,
+    ip: req?.ip,
+    userAgent: req?.get('User-Agent'),
+    correlationId: req?.correlationId,
+    userId: req?.user?.id
+  };
+  
+  // In production, this should integrate with your logging system
+  if (process.env.NODE_ENV === 'production') {
+    console.log('[SECURITY AUDIT]', JSON.stringify(logEntry));
+  }
+};
+
 module.exports = {
   helmet: helmet(helmetConfig),
   cors: cors(corsConfig),
@@ -282,4 +347,8 @@ module.exports = {
   requestId,
   contentTypeValidation,
   requestSizeLimit,
+  csrfProtection,
+  generateCSRFToken,
+  sessionSecurity,
+  securityLogger,
 };
