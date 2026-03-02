@@ -61,41 +61,147 @@ const config = {
 
 // Environment validation
 const validateEnvironment = () => {
+  const errors = [];
+  const warnings = [];
+  
+  // Required environment variables with validation rules
   const requiredVars = [
-    'MONGODB_URI',
-    'JWT_SECRET',
-    'JWT_REFRESH_SECRET'
+    {
+      name: 'MONGODB_URI',
+      validate: (value) => {
+        if (!value.startsWith('mongodb://') && !value.startsWith('mongodb+srv://')) {
+          return 'Must be a valid MongoDB URI (mongodb:// or mongodb+srv://)';
+        }
+        return null;
+      }
+    },
+    {
+      name: 'JWT_SECRET',
+      validate: (value) => {
+        if (value.length < 32) {
+          return 'Must be at least 32 characters for security';
+        }
+        if (value === 'your-secret-key-change-in-production') {
+          return 'Must be changed from default value';
+        }
+        return null;
+      }
+    },
+    {
+      name: 'JWT_REFRESH_SECRET',
+      validate: (value) => {
+        if (value.length < 32) {
+          return 'Must be at least 32 characters for security';
+        }
+        if (value === 'your-refresh-secret-key') {
+          return 'Must be changed from default value';
+        }
+        return null;
+      }
+    }
   ];
 
+  // Critical variables (warnings if missing)
   const criticalVars = [
-    'SMTP_HOST',
-    'SMTP_USER', 
-    'SMTP_PASS'
+    {
+      name: 'SMTP_HOST',
+      hint: 'Email notifications will not work without SMTP configuration'
+    },
+    {
+      name: 'SMTP_USER',
+      hint: 'Email authentication will fail'
+    }, 
+    {
+      name: 'SMTP_PASS',
+      hint: 'Email authentication will fail'
+    },
+    {
+      name: 'CLOUDINARY_CLOUD_NAME',
+      hint: 'File uploads will not work'
+    },
+    {
+      name: 'OPENAI_API_KEY',
+      hint: 'AI features will be disabled'
+    }
   ];
 
-  const missingRequired = requiredVars.filter(varName => !process.env[varName]);
-  const missingCritical = criticalVars.filter(varName => !process.env[varName]);
+  // Validate required variables
+  requiredVars.forEach(({ name, validate }) => {
+    const value = process.env[name];
+    if (!value) {
+      errors.push(`❌ Missing required variable: ${name}`);
+    } else if (validate) {
+      const error = validate(value);
+      if (error) {
+        errors.push(`❌ Invalid ${name}: ${error}`);
+      }
+    }
+  });
 
-  if (missingRequired.length > 0) {
-    console.error('❌ Missing required environment variables:', missingRequired);
-    process.exit(1);
-  }
+  // Check critical variables
+  criticalVars.forEach(({ name, hint }) => {
+    if (!process.env[name]) {
+      warnings.push(`⚠️  Missing ${name} - ${hint}`);
+    }
+  });
 
-  if (missingCritical.length > 0) {
-    console.warn('⚠️  Missing critical environment variables (some features may not work):', missingCritical);
-  }
-
+  // Production-specific validations
   if (config.NODE_ENV === 'production') {
-    const prodRequired = ['CLOUDINARY_CLOUD_NAME', 'CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET'];
-    const missingProd = prodRequired.filter(varName => !process.env[varName]);
+    const prodRequired = [
+      'CLOUDINARY_CLOUD_NAME', 
+      'CLOUDINARY_API_KEY', 
+      'CLOUDINARY_API_SECRET'
+    ];
     
-    if (missingProd.length > 0) {
-      console.error('❌ Missing production environment variables:', missingProd);
-      process.exit(1);
+    prodRequired.forEach(varName => {
+      if (!process.env[varName]) {
+        errors.push(`❌ Missing production variable: ${varName}`);
+      }
+    });
+
+    // Validate production security settings
+    if (process.env.SESSION_SECRET === 'your-session-secret') {
+      errors.push('❌ SESSION_SECRET must be changed from default in production');
+    }
+
+    if (process.env.CORS_ORIGIN === 'http://localhost:3000') {
+      warnings.push('⚠️  CORS_ORIGIN should be set to production domain');
     }
   }
 
+  // Validate numeric values
+  const numericVars = [
+    { name: 'PORT', min: 1, max: 65535 },
+    { name: 'SMTP_PORT', min: 1, max: 65535 }
+  ];
+
+  numericVars.forEach(({ name, min, max }) => {
+    const value = process.env[name];
+    if (value && (isNaN(value) || parseInt(value) < min || parseInt(value) > max)) {
+      errors.push(`❌ ${name} must be a number between ${min} and ${max}`);
+    }
+  });
+
+  // Display results
+  if (errors.length > 0) {
+    console.error('\n💥 Environment validation failed:');
+    errors.forEach(error => console.error(error));
+    console.error('\n📖 See ENVIRONMENT_VARIABLES.md for setup instructions\n');
+    process.exit(1);
+  }
+
+  if (warnings.length > 0) {
+    console.warn('\n⚡ Environment warnings:');
+    warnings.forEach(warning => console.warn(warning));
+    console.warn('');
+  }
+
   console.log('✅ Environment validation passed');
+  
+  // Log configuration summary
+  console.log(`🌍 Environment: ${config.NODE_ENV}`);
+  console.log(`🗄️  Database: ${config.MONGODB_URI.replace(/mongodb\+srv:\/\/[^:]+:[^@]+@/, 'mongodb+srv://***:***@')}`);
+  console.log(`🚀 Server starting on port ${config.PORT}`);
 };
 
 // Validate environment on module load
