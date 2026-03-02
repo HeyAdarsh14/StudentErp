@@ -7,10 +7,55 @@ Production:  https://api.studenterp.dev/api
 ```
 
 ## API Version
-**Current Version:** v1.3.0  
-**Last Updated:** February 27, 2026  
+**Current Version:** v1.3.1  
+**Last Updated:** March 2, 2026  
 **Backwards Compatibility:** v1.2.0+  
 **Deprecation Policy:** 6 months notice for breaking changes
+
+## 📋 API Status Codes
+
+| Code | Status | Description |
+|------|--------|-------------|
+| 200  | OK | Request successful |
+| 201  | Created | Resource created successfully |
+| 204  | No Content | Request successful, no content to return |
+| 400  | Bad Request | Invalid request parameters |
+| 401  | Unauthorized | Authentication required |
+| 403  | Forbidden | Access denied |
+| 404  | Not Found | Resource not found |
+| 409  | Conflict | Resource already exists |
+| 422  | Unprocessable Entity | Validation failed |
+| 429  | Too Many Requests | Rate limit exceeded |
+| 500  | Internal Server Error | Server error |
+
+## 🚨 Error Response Format
+
+All error responses follow a consistent format:
+
+```json
+{
+  "success": false,
+  "message": "Human-readable error message",
+  "code": "ERROR_CODE",
+  "errors": [
+    {
+      "field": "email",
+      "message": "Email is required",
+      "code": "REQUIRED"
+    }
+  ],
+  "correlationId": "req-12345-abcde",
+  "timestamp": "2026-03-02T10:30:00.000Z"
+}
+```
+
+### Common Error Codes
+- `VALIDATION_ERROR` - Input validation failed
+- `AUTH_REQUIRED` - Authentication token required
+- `PERMISSION_DENIED` - Insufficient permissions
+- `RATE_LIMIT_EXCEEDED` - Too many requests
+- `RESOURCE_NOT_FOUND` - Requested resource doesn't exist
+- `DUPLICATE_RESOURCE` - Resource already exists
 
 ## 🚀 Quick Start Guide
 ```bash
@@ -81,6 +126,74 @@ Logout user
 
 #### POST `/auth/forgot-password`
 Request password reset
+
+---
+
+## 📚 API Best Practices & Examples
+
+### Request Headers
+```http
+Content-Type: application/json
+Authorization: Bearer <jwt_token>
+X-Correlation-ID: <optional-request-id>
+X-API-Version: v1.3.1
+```
+
+### Pagination
+All list endpoints support pagination:
+
+```bash
+# Standard pagination
+GET /api/students?page=1&limit=20
+
+# Search with pagination
+GET /api/students?search=john&page=2&limit=10&sort=name&order=asc
+```
+
+### Response Format
+All successful responses follow this structure:
+
+```json
+{
+  "success": true,
+  "data": {
+    "items": [...],
+    "pagination": {
+      "totalCount": 100,
+      "currentPage": 1,
+      "totalPages": 5,
+      "hasNext": true,
+      "hasPrev": false
+    }
+  },
+  "meta": {
+    "timestamp": "2026-03-02T10:30:00.000Z",
+    "version": "v1.3.1",
+    "correlationId": "req-12345-abcde"
+  }
+}
+```
+
+### File Upload Example
+```bash
+curl -X POST http://localhost:5000/api/documents/upload \
+  -H "Authorization: Bearer <token>" \
+  -F "file=@document.pdf" \
+  -F "category=assignment" \
+  -F "description=Math Assignment 1"
+```
+
+### Filtering & Sorting
+```bash
+# Multiple filters
+GET /api/students?department=CS&year=2024&status=active
+
+# Sorting
+GET /api/students?sort=createdAt&order=desc
+
+# Date range filtering
+GET /api/attendance?startDate=2026-03-01&endDate=2026-03-07
+```
 
 ---
 
