@@ -1,8 +1,13 @@
 {
   "name": "college-erp-backend",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Next-generation College ERP System Backend API with AI intelligence, real-time features, and modern architecture",
   "main": "src/server.js",
+  "author": {
+    "name": "Adarsh",
+    "email": "contact@studenterp.dev",
+    "url": "https://github.com/HeyAdarsh14"
+  },
   "homepage": "https://github.com/HeyAdarsh14/StudentErp",
   "repository": {
     "type": "git",
@@ -10,6 +15,10 @@
   },
   "bugs": {
     "url": "https://github.com/HeyAdarsh14/StudentErp/issues"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
   },
   "scripts": {
     "start": "node src/server.js",
